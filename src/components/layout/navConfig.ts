@@ -10,6 +10,7 @@ import {
   Boxes,
   LucideIcon,
   Stethoscope,
+  Clock,
 } from 'lucide-react';
 import { UserRole } from '@/types/auth';
 
@@ -31,6 +32,7 @@ export const ROLE_NAV_ITEMS: Record<UserRole, NavItem[]> = {
   DOCTOR: [
     { label: 'Dashboard', href: '/doctor/dashboard', icon: LayoutDashboard },
     { label: 'Appointments', href: '/doctor/appointments', icon: Calendar },
+    { label: 'Schedule', href: '/doctor/schedule', icon: Clock },
     { label: 'Prescriptions', href: '/doctor/prescriptions', icon: FileText },
     { label: 'Doctor Profile', href: '/doctor/profile', icon: UserCheck },
   ],

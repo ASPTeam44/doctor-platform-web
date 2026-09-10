@@ -1,5 +1,12 @@
 import { apiClient } from './client';
-import { AvailableSlotsResponse, Doctor, DoctorProfile } from '@/types/doctor';
+import {
+  AvailableSlotsResponse,
+  Doctor,
+  DoctorProfile,
+  DoctorSchedule,
+  CreateSchedulePayload,
+  UpdateSchedulePayload,
+} from '@/types/doctor';
 import { PaginationMeta } from '@/types/api';
 
 export interface DoctorsListResponse {
@@ -69,8 +76,36 @@ export const doctorApi = {
     return response.data;
   },
 
-  getMySchedule: async (): Promise<{ schedules: any[] }> => {
-    const response = await apiClient.get<{ schedules: any[] }>('/doctor/schedule');
+  getMySchedule: async (): Promise<{ schedules: DoctorSchedule[] }> => {
+    const response = await apiClient.get<{ schedules: DoctorSchedule[] }>('/doctor/schedule');
+    return response.data;
+  },
+
+  createSchedule: async (
+    scheduleData: CreateSchedulePayload
+  ): Promise<{ message: string; schedule: DoctorSchedule }> => {
+    const response = await apiClient.post<{ message: string; schedule: DoctorSchedule }>(
+      '/doctor/schedule',
+      scheduleData
+    );
+    return response.data;
+  },
+
+  updateSchedule: async (
+    scheduleId: string,
+    scheduleData: UpdateSchedulePayload
+  ): Promise<{ message: string; schedule: DoctorSchedule }> => {
+    const response = await apiClient.put<{ message: string; schedule: DoctorSchedule }>(
+      `/doctor/schedule/${scheduleId}`,
+      scheduleData
+    );
+    return response.data;
+  },
+
+  deleteSchedule: async (scheduleId: string): Promise<{ message: string }> => {
+    const response = await apiClient.delete<{ message: string }>(
+      `/doctor/schedule/${scheduleId}`
+    );
     return response.data;
   },
 };

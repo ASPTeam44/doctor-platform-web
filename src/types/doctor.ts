@@ -45,3 +45,40 @@ export interface AvailableSlotsResponse {
   timezone: string;
   slots: TimeSlot[];
 }
+
+export type DayOfWeek =
+  | 'MONDAY'
+  | 'TUESDAY'
+  | 'WEDNESDAY'
+  | 'THURSDAY'
+  | 'FRIDAY'
+  | 'SATURDAY'
+  | 'SUNDAY';
+
+export interface DoctorSchedule {
+  id: string;
+  doctorId: string;
+  dayOfWeek: DayOfWeek;
+  startTime: string; // "HH:mm" in 24h format
+  endTime: string;   // "HH:mm" in 24h format
+  slotDuration: number; // minutes (10 - 120, default 30)
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSchedulePayload {
+  dayOfWeek: DayOfWeek | string;
+  startTime: string;
+  endTime: string;
+  slotDuration?: number;
+  active?: boolean;
+}
+
+export interface UpdateSchedulePayload {
+  dayOfWeek?: DayOfWeek | string;
+  startTime?: string;
+  endTime?: string;
+  slotDuration?: number;
+  active?: boolean;
+}

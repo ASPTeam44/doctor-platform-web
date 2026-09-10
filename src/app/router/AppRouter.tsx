@@ -25,6 +25,7 @@ import { PatientMedicalRecordsPage } from '@/pages/patient/PatientMedicalRecords
 // Doctor Pages
 import { DoctorDashboard } from '@/pages/doctor/DoctorDashboard';
 import { DoctorAppointmentsPage } from '@/pages/doctor/DoctorAppointmentsPage';
+import { DoctorSchedulePage } from '@/pages/doctor/DoctorSchedulePage';
 import { DoctorPrescriptionsPage } from '@/pages/doctor/DoctorPrescriptionsPage';
 import { DoctorProfilePage } from '@/pages/doctor/DoctorProfilePage';
 
@@ -71,6 +72,7 @@ export const AppRouter: React.FC = () => {
         <Route element={<RoleProtectedRoute allowedRoles={['DOCTOR']} />}>
           <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
           <Route path="/doctor/appointments" element={<DoctorAppointmentsPage />} />
+          <Route path="/doctor/schedule" element={<DoctorSchedulePage />} />
           <Route path="/doctor/prescriptions" element={<DoctorPrescriptionsPage />} />
           <Route path="/doctor/profile" element={<DoctorProfilePage />} />
         </Route>
