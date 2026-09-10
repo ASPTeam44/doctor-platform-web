@@ -14,6 +14,8 @@ import {
   FileText,
   AlertCircle,
   Filter,
+  Pill,
+  FolderHeart,
 } from 'lucide-react';
 import { appointmentApi } from '@/lib/api/appointmentApi';
 import { PageContainer } from '@/components/layout/PageContainer';
@@ -28,6 +30,8 @@ import { Alert } from '@/components/ui/Alert';
 import { formatDate, formatAppointmentTime } from '@/lib/utils/formatters';
 import { Appointment, AppointmentStatus } from '@/types/appointment';
 import { AppointmentDetailsModal } from '@/components/doctor/AppointmentDetailsModal';
+import { PrescriptionModal } from '@/components/doctor/PrescriptionModal';
+import { PatientReportsModal } from '@/components/doctor/PatientReportsModal';
 
 const statusVariantMap: Record<AppointmentStatus, BadgeVariant> = {
   PENDING: 'warning',
@@ -44,6 +48,8 @@ export const DoctorAppointmentsPage: React.FC = () => {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [prescribeAppointment, setPrescribeAppointment] = useState<Appointment | null>(null);
+  const [viewReportsPatient, setViewReportsPatient] = useState<{ id: string; name: string } | null>(null);
   const [feedbackSuccess, setFeedbackSuccess] = useState<string | null>(null);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
@@ -349,6 +355,31 @@ export const DoctorAppointmentsPage: React.FC = () => {
                             </>
                           )}
 
+                          {(isConfirmed || appt.status === 'COMPLETED') && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              leftIcon={<Pill className="h-3.5 w-3.5 text-brand-600" />}
+                              onClick={() => setPrescribeAppointment(appt)}
+                            >
+                              Prescribe
+                            </Button>
+                          )}
+
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            leftIcon={<FolderHeart className="h-3.5 w-3.5 text-blue-600" />}
+                            onClick={() =>
+                              setViewReportsPatient({
+                                id: appt.patientId,
+                                name: appt.patient?.name || 'Patient',
+                              })
+                            }
+                          >
+                            Reports
+                          </Button>
+
                           <Button
                             variant="ghost"
                             size="sm"
@@ -393,7 +424,19 @@ export const DoctorAppointmentsPage: React.FC = () => {
                     </p>
                   )}
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setViewReportsPatient({
+                          id: appt.patientId,
+                          name: appt.patient?.name || 'Patient',
+                        })
+                      }
+                    >
+                      Reports
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -401,6 +444,15 @@ export const DoctorAppointmentsPage: React.FC = () => {
                     >
                       Details
                     </Button>
+                    {(isConfirmed || appt.status === 'COMPLETED') && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPrescribeAppointment(appt)}
+                      >
+                        Prescribe
+                      </Button>
+                    )}
                     {isPending && (
                       <Button
                         variant="primary"
@@ -449,6 +501,30 @@ export const DoctorAppointmentsPage: React.FC = () => {
         onClose={() => setSelectedAppointment(null)}
         appointment={selectedAppointment}
       />
+
+      {/* Prescription Modal */}
+      {prescribeAppointment && (
+        <PrescriptionModal
+          isOpen={!!prescribeAppointment}
+          onClose={() => setPrescribeAppointment(null)}
+          preselectedAppointmentId={prescribeAppointment.id}
+          preselectedPatientName={prescribeAppointment.patient?.name}
+          onSuccess={() => {
+            setFeedbackSuccess(`Prescription saved for appointment #${prescribeAppointment.id.slice(-6)}.`);
+            setPrescribeAppointment(null);
+          }}
+        />
+      )}
+
+      {/* Patient Reports Modal */}
+      {viewReportsPatient && (
+        <PatientReportsModal
+          isOpen={!!viewReportsPatient}
+          onClose={() => setViewReportsPatient(null)}
+          patientId={viewReportsPatient.id}
+          patientName={viewReportsPatient.name}
+        />
+      )}
     </PageContainer>
   );
 };
