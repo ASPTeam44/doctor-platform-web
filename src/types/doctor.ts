@@ -1,3 +1,10 @@
+export interface DoctorUserRef {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+}
+
 export interface DoctorProfile {
   id: string;
   userId: string;
@@ -13,7 +20,10 @@ export interface DoctorProfile {
   timezone: string;
   createdAt: string;
   updatedAt: string;
+  user?: DoctorUserRef;
 }
+
+export type Doctor = DoctorProfile;
 
 export interface DoctorUser {
   id: string;
@@ -23,8 +33,8 @@ export interface DoctorUser {
 }
 
 export interface TimeSlot {
-  start: string;
-  end: string;
+  start: string; // "HH:mm" in 24h format (UTC)
+  end: string;   // "HH:mm" in 24h format (UTC)
   available: boolean;
 }
 

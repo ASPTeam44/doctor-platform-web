@@ -16,6 +16,7 @@ import { NotFoundPage } from '@/pages/common/NotFoundPage';
 // Patient Pages
 import { PatientDashboard } from '@/pages/patient/PatientDashboard';
 import { PatientDoctorsPage } from '@/pages/patient/PatientDoctorsPage';
+import { PatientDoctorDetailPage } from '@/pages/patient/PatientDoctorDetailPage';
 import { PatientAppointmentsPage } from '@/pages/patient/PatientAppointmentsPage';
 import { PatientPrescriptionsPage } from '@/pages/patient/PatientPrescriptionsPage';
 import { PatientOrdersPage } from '@/pages/patient/PatientOrdersPage';
@@ -59,6 +60,7 @@ export const AppRouter: React.FC = () => {
         <Route element={<RoleProtectedRoute allowedRoles={['PATIENT']} />}>
           <Route path="/patient/dashboard" element={<PatientDashboard />} />
           <Route path="/patient/doctors" element={<PatientDoctorsPage />} />
+          <Route path="/patient/doctors/:doctorId" element={<PatientDoctorDetailPage />} />
           <Route path="/patient/appointments" element={<PatientAppointmentsPage />} />
           <Route path="/patient/prescriptions" element={<PatientPrescriptionsPage />} />
           <Route path="/patient/orders" element={<PatientOrdersPage />} />

@@ -1,27 +1,54 @@
-import { apiClient } from "./client";
-import { AvailableSlotsResponse, DoctorProfile, DoctorUser } from "@/types/doctor";
-import { PaginationMeta } from "@/types/api";
+import { apiClient } from './client';
+import { AvailableSlotsResponse, Doctor, DoctorProfile } from '@/types/doctor';
+import { PaginationMeta } from '@/types/api';
 
 export interface DoctorsListResponse {
-  doctors: DoctorUser[];
+  doctors: Doctor[];
   pagination: PaginationMeta;
 }
 
+export interface GetAllDoctorsParams {
+  page?: number;
+  limit?: number;
+  name?: string;
+  specialization?: string;
+}
+
 export const doctorApi = {
-  getAllDoctors: async (params?: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    specialization?: string;
-  }): Promise<DoctorsListResponse> => {
-    const response = await apiClient.get<DoctorsListResponse>("/doctor/all", { params });
+  getAllDoctors: async (params?: GetAllDoctorsParams): Promise<DoctorsListResponse> => {
+    // Only pass non-empty trimmed parameters
+    const cleanParams: Record<string, string | number> = {};
+    if (params?.page) cleanParams.page = params.page;
+    if (params?.limit) cleanParams.limit = params.limit;
+    if (params?.name?.trim()) cleanParams.name = params.name.trim();
+    if (params?.specialization && params.specialization !== 'ALL' && params.specialization.trim()) {
+      cleanParams.specialization = params.specialization.trim();
+    }
+
+    const response = await apiClient.get<DoctorsListResponse>('/doctor/all', {
+      params: cleanParams,
+    });
     return response.data;
   },
 
-  getAvailableSlots: async (doctorId: string, date: string): Promise<AvailableSlotsResponse> => {
-    const response = await apiClient.get<AvailableSlotsResponse>(`/doctor/${doctorId}/available-slots`, {
-      params: { date },
+  getDoctorById: async (doctorId: string): Promise<Doctor | null> => {
+    // Backend returns verified doctors from /doctor/all. We look up by userId or profile id
+    const res = await apiClient.get<DoctorsListResponse>('/doctor/all', {
+      params: { limit: 50 },
     });
+    const found = res.data.doctors.find(
+      (d) => d.userId === doctorId || d.id === doctorId || d.user?.id === doctorId
+    );
+    return found || null;
+  },
+
+  getAvailableSlots: async (doctorId: string, date: string): Promise<AvailableSlotsResponse> => {
+    const response = await apiClient.get<AvailableSlotsResponse>(
+      `/doctor/${doctorId}/available-slots`,
+      {
+        params: { date },
+      }
+    );
     return response.data;
   },
 
@@ -36,14 +63,14 @@ export const doctorApi = {
     timezone?: string;
   }): Promise<{ message: string; doctorProfile: DoctorProfile }> => {
     const response = await apiClient.post<{ message: string; doctorProfile: DoctorProfile }>(
-      "/doctor/create-profile",
+      '/doctor/create-profile',
       profileData
     );
     return response.data;
   },
 
   getMySchedule: async (): Promise<{ schedules: any[] }> => {
-    const response = await apiClient.get<{ schedules: any[] }>("/doctor/schedule");
+    const response = await apiClient.get<{ schedules: any[] }>('/doctor/schedule');
     return response.data;
   },
 };

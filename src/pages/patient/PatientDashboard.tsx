@@ -17,7 +17,7 @@ import { Badge, BadgeVariant } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
-import { formatDate, formatTimeSlot } from '@/lib/utils/formatters';
+import { formatDate, formatAppointmentTime } from '@/lib/utils/formatters';
 import { Appointment, AppointmentStatus } from '@/types/appointment';
 
 const statusVariantMap: Record<AppointmentStatus, BadgeVariant> = {
@@ -160,7 +160,7 @@ export const PatientDashboard: React.FC = () => {
                       <div className="flex items-center gap-4">
                         <div className="text-right hidden sm:block">
                           <p className="text-xs font-medium text-slate-700">{formatDate(appt.appointmentDate)}</p>
-                          <p className="text-xs text-slate-500">{formatTimeSlot()}</p>
+                          <p className="text-xs text-slate-500 font-mono">{formatAppointmentTime(appt.appointmentDate)}</p>
                         </div>
                         <Badge variant={statusVariantMap[appt.status]} dot>
                           {appt.status}
